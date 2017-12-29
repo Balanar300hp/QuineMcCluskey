@@ -21,12 +21,6 @@ public:
 	auto get_minterm()->const int& { return implicant; };
 	auto get_bits()-> const string&{ return bits; };
 private:
-	//ones - вес вектора в таблице истинности, вес минтермы
-	//mask позволяет дешифровать место(а) нахождения (-) в полученном импликанте, т.к. представляет собой степень двойки
-	//bits - двоичное представление минтермы или импликанта 
-	//vars - количество переменных в таблице истинности
-	//used - булева переменная. Изменяет свое значение, в случае если минтерм или импликант использовался в слиянии
-	//mints - хранит минтермы , используемые при склеивании, например, для 00- = (m0,m1), mints ={0,1}
 	int implicant, vars, mask, ones;
 	string bits;
 	vector<int> mints;
@@ -80,8 +74,8 @@ public:
 	auto get_M()-> const vector<size_t>&;
 	auto get_ind()-> const int&;
 private:
-	int vars;//количество переменных в таблице истинности
-	int comb;//высота таблицы истинности
+	int vars;
+	int comb;
 	int ind;
 	vector<size_t> minterms, M0;
 	vector<Implicant> implicants,primes;
@@ -180,15 +174,11 @@ auto QM::solve()->void {
 	for (size_t i = 0; i < implicants.size(); ++i)
 		primes.push_back(implicants[i]);
 
-	// на этом этапе программы получили сокращенную ДНФ
-
 	if (primes.back().mask == comb - 1) {
 		flag = false; return;
 	}
 
 	sort(primes.begin(), primes.end());
-
-	// находим минимальные ДНФ методом импликантной матрицы
 	vector<vector<bool>> table(primes.size(), vector<bool>(minterms.size(), false));
 
 	for (size_t i = 0; i < primes.size(); ++i)
